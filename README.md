@@ -1,60 +1,143 @@
-# DBA Challenge 20240802
+# Análise de Dados - Sistema de Vendas e Produção
 
+## 📋 Visão Geral do Projeto
 
-## Introdução
+Este projeto consiste na criação de consultas PL/SQL para análise de dados de um sistema integrado de vendas e produção, baseado no modelo de dados fornecido.
 
-Nesse desafio trabalharemos utilizando a base de dados da empresa Bike Stores Inc com o objetivo de obter métricas relevantes para equipe de Marketing e Comercial.
+## 🎯 Objetivos
 
-Com isso, teremos que trabalhar com várioas consultas utilizando conceitos como `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `GROUP BY` e `COUNT`.
+Desenvolver consultas SQL para identificar:
+1. Clientes sem compras realizadas
+2. Produtos nunca vendidos
+3. Produtos sem estoque
+4. Vendas agrupadas por marca e loja
+5. Funcionários não associados a pedidos
 
-### Antes de começar
- 
-- O projeto deve utilizar a Linguagem específica na avaliação. Por exempo: SQL, T-SQL, PL/SQL e PSQL;
-- Considere como deadline da avaliação a partir do início do teste. Caso tenha sido convidado a realizar o teste e não seja possível concluir dentro deste período, avise a pessoa que o convidou para receber instruções sobre o que fazer.
-- Documentar todo o processo de investigação para o desenvolvimento da atividade (README.md no seu repositório); os resultados destas tarefas são tão importantes do que o seu processo de pensamento e decisões à medida que as completa, por isso tente documentar e apresentar os seus hipóteses e decisões na medida do possível.
- 
- 
+## 🔍 Processo de Investigação e Desenvolvimento
 
-## O projeto
+### 1. Análise do Modelo de Dados
 
-- Criar as consultas utilizando a linguagem escolhida;
-- Entregar o código gerado do Teste.
+#### **Módulo Sales (Vendas)**
+- **customers**: Dados dos clientes
+- **orders**: Pedidos realizados
+- **order_items**: Itens dos pedidos
+- **staffs**: Funcionários
+- **stores**: Lojas
 
-### Modelo de Dados:
+#### **Módulo Production (Produção)**
+- **products**: Catálogo de produtos
+- **categories**: Categorias de produtos
+- **brands**: Marcas
+- **stocks**: Controle de estoque
 
-Para entender o modelo, revisar o diagrama a seguir:
+#### **Relacionamentos Identificados**
+- customers ↔ orders (1:N)
+- orders ↔ order_items (1:N)
+- products ↔ order_items (1:N)
+- stores ↔ orders (1:N)
+- staffs ↔ orders (1:N)
+- products ↔ stocks (1:N)
+- brands ↔ products (1:N)
+- categories ↔ products (1:N)
 
-![<img src="samples/model.png" height="500" alt="Modelo" title="Modelo"/>](samples/model.png)
+### 2. Estratégias de Consulta Desenvolvidas
 
+#### **Consulta 1: Clientes sem Compras**
+- **Abordagem**: LEFT JOIN entre customers e orders
+- **Lógica**: Identificar registros onde o customer_id não existe na tabela orders
+- **Filtro**: WHERE o.customer_id IS NULL
 
-## Selects
+#### **Consulta 2: Produtos Não Vendidos**
+- **Abordagem**: LEFT JOIN entre products e order_items
+- **Lógica**: Produtos que nunca aparecem na tabela order_items
+- **Complemento**: Incluir informações de marca e categoria para melhor análise
 
-Construir as seguintes consultas:
+#### **Consulta 3: Produtos Sem Estoque**
+- **Abordagem**: INNER JOIN entre products, stocks e stores
+- **Lógica**: Filtrar produtos onde quantity = 0 ou IS NULL
+- **Detalhamento**: Mostrar por loja para análise localizada
 
-- Listar todos Clientes que não tenham realizado uma compra;
-- Listar os Produtos que não tenham sido comprados
-- Listar os Produtos sem Estoque;
-- Agrupar a quantidade de vendas que uma determinada Marca por Loja. 
-- Listar os Funcionarios que não estejam relacionados a um Pedido.
+#### **Consulta 4: Vendas por Marca e Loja**
+- **Abordagem**: Múltiplos INNER JOINs com GROUP BY
+- **Métricas calculadas**:
+  - Quantidade de vendas (COUNT)
+  - Total de unidades vendidas (SUM)
+  - Valor total (considerando descontos)
+- **Ordenação**: Por loja e quantidade de vendas
 
-## Readme do Repositório
+#### **Consulta 5: Funcionários sem Pedidos**
+- **Abordagem**: LEFT JOIN entre staffs e orders
+- **Lógica**: Funcionários que nunca processaram pedidos
+- **Informações adicionais**: Status ativo/inativo e loja
 
-- Deve conter o título do projeto
-- Uma descrição sobre o projeto em frase
-- Deve conter uma lista com linguagem, framework e/ou tecnologias usadas
-- Como instalar e usar o projeto (instruções)
-- Não esqueça o [.gitignore](https://www.toptal.com/developers/gitignore)
-- Se está usando github pessoal, referencie que é um challenge by coodesh:  
+### 3. Considerações Técnicas
 
->  This is a challenge by [Coodesh](https://coodesh.com/)
+#### **Tratamento de NULLs**
+- Uso consistente de IS NULL para identificar ausências
+- Consideração de valores NULL em campos de quantidade
 
-## Finalização e Instruções para a Apresentação
+#### **Performance**
+- Uso de índices implícitos nas chaves primárias e estrangeiras
+- ORDER BY para resultados organizados
+- Evitado uso de subconsultas desnecessárias
 
-1. Adicione o link do repositório com a sua solução no teste
-2. Verifique se o Readme está bom e faça o commit final em seu repositório;
-3. Envie e aguarde as instruções para seguir. Caso o teste tenha apresentação de vídeo, dentro da tela de entrega será possível gravar após adicionar o link do repositório. Sucesso e boa sorte. =)
+#### **Integridade dos Dados**
+- Verificação de relacionamentos obrigatórios
+- Validação de consistência entre módulos
 
+### 4. Desafios Encontrados
 
-## Suporte
+#### **Relacionamentos Complexos**
+- Navegação entre módulos Sales e Production
+- Múltiplas tabelas intermediárias (order_items como ponte)
 
-Para tirar dúvidas sobre o processo envie uma mensagem diretamente a um especialista no chat da plataforma. 
+#### **Cálculos de Vendas**
+- Consideração de descontos na fórmula de receita
+- Agregações em múltiplos níveis (item, pedido, loja)
+
+#### **Dados Ausentes**
+- Tratamento de produtos sem estoque cadastrado
+- Funcionários inativos vs. sem atividade
+
+### 5. Consultas Complementares
+
+Além das consultas solicitadas, foram criadas consultas adicionais para:
+- Verificação de integridade dos dados
+- Resumo geral de vendas por loja
+- Identificação de inconsistências
+
+## 🚀 Como Executar
+
+```sql
+-- Execute as consultas individualmente ou em sequência
+-- Certifique-se de que todas as tabelas estão criadas e populadas
+-- Verifique os relacionamentos de chave estrangeira
+
+-- Para melhor performance, considere criar índices em:
+CREATE INDEX idx_orders_customer_id ON orders(customer_id);
+CREATE INDEX idx_order_items_product_id ON order_items(product_id);
+CREATE INDEX idx_stocks_product_id ON stocks(product_id);
+```
+
+## 📊 Resultados Esperados
+
+Cada consulta retornará:
+1. **Clientes sem compras**: Lista completa com dados de contato
+2. **Produtos não vendidos**: Catálogo com marca e categoria
+3. **Produtos sem estoque**: Detalhamento por loja
+4. **Vendas por marca/loja**: Métricas de performance
+5. **Funcionários inativos**: Lista para análise de recursos humanos
+
+## 🔧 Possíveis Melhorias
+
+- Implementação de procedures para execução automatizada
+- Criação de views para consultas frequentes
+- Implementação de logs de auditoria
+- Parâmetros dinâmicos para filtros específicos
+
+## 📝 Observações
+
+- As consultas foram testadas considerando a estrutura do modelo fornecido
+- Campos marcados com asterisco (*) são chaves primárias
+- Relacionamentos foram inferidos baseados na nomenclatura e estrutura
+- Considerar validação com dados reais antes da implementação em produção
