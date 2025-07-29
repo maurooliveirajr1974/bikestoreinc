@@ -1,0 +1,130 @@
+# ============================================================================
+# .gitignore - Análise de Dados PL/SQL
+# ============================================================================
+
+# Logs de Banco de Dados
+*.log
+*.trace
+*.trc
+*.aud
+*.dmp
+*.exp
+
+# Arquivos temporários do Oracle
+*.tmp
+*.temp
+*.bak
+*.old
+*.orig
+*~
+
+# Arquivos de configuração sensíveis
+tnsnames.ora
+sqlnet.ora
+listener.ora
+*.conf
+config.properties
+connection.properties
+
+# Credenciais e senhas
+passwords.txt
+credentials.*
+secrets.*
+.env
+.env.local
+.env.production
+
+# Arquivos específicos de IDEs
+## Visual Studio Code
+.vscode/
+*.code-workspace
+
+## IntelliJ IDEA / DataGrip
+.idea/
+*.iml
+*.iws
+*.ipr
+
+## SQL Developer
+.sqldeveloper/
+connections.xml
+
+## Toad
+*.tmd
+*.tuo
+
+## PL/SQL Developer
+*.pld
+
+# Arquivos do Sistema Operacional
+## Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+## macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+## Linux
+*~
+.directory
+.Trash-*
+
+# Arquivos de backup e versionamento
+*.backup
+*.sql.bak
+*.ddl.bak
+versions/
+backups/
+
+# Dados sensíveis
+data/
+exports/
+dumps/
+*.csv
+*.xlsx
+*.xls
+
+# Documentos temporários
+docs/temp/
+*.docx~
+*.pptx~
+
+# Cache e arquivos temporários
+cache/
+temp/
+tmp/
+*.cache
+
+# Node.js (caso seja usado para ferramentas auxiliares)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Arquivos de compilação e build
+build/
+dist/
+target/
+out/
+
+# Arquivos de teste com dados sensíveis
+test-data/
+sample-data/
+mock-data/
+
+# Certificados e chaves
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Arquivos de monitoramento e performance
+performance/
+monitoring/
+stats/
